@@ -1,33 +1,19 @@
 from rest_framework import serializers
-from ..models import CarList
+from ..models import CarList, ShowroomList
 
 
-# Validators
-def alphanumeric(value):
-    if not str(value).isalnum():
-        raise serializers.ValidationError('Chassis number should contain alphanumeric characters only.')
-    return value
+class CarSerializer(serializers.ModelSerializer):
+    # Adding a custom field to the serializer
+    discounted_price = serializers.SerializerMethodField()
+    class Meta:
+        model = CarList
+        fields = '__all__'
 
-
-class CarSerializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True)
-    name = serializers.CharField()
-    description = serializers.CharField()
-    active = serializers.BooleanField(read_only=True)
-    chassisnumber = serializers.CharField(validators=[alphanumeric])
-    price = serializers.DecimalField(max_digits=10, decimal_places=2)
-
-    def create(self, validated_data):
-        return CarList.objects.create(**validated_data)
+    def get_discounted_price(self, obj):
+        discount_percentage = 0.10
+        discounted_price = float(obj.price) * (1 - discount_percentage)
+        return discounted_price
     
-    def update(self, instance, validated_data):
-        instance.name = validated_data.get('name', instance.name)
-        instance.description = validated_data.get('description', instance.description)
-        instance.active = validated_data.get('active', instance.active)
-        instance.chassisnumber = validated_data.get('chassisnumber', instance.chassisnumber)
-        instance.price = validated_data.get('price', instance.price)
-        instance.save()
-        return instance
     
     # Field level validations
     def validate_price(self, value):
@@ -42,3 +28,9 @@ class CarSerializer(serializers.Serializer):
         if attrs['name'] == attrs['description']:
             raise serializers.ValidationError('Name and description should not be same.')
         return attrs
+
+
+class ShowroomListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ShowroomList
+        fields = '__all__'

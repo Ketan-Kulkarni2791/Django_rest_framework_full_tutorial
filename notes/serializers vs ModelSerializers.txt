@@ -1,0 +1,63 @@
+-- Code for serializers.serializer :
+
+def alphanumeric(value):
+    if not str(value).isalnum():
+        raise serializers.ValidationError('Chassis number should contain alphanumeric characters only.')
+    return value
+
+class CarSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    name = serializers.CharField()
+    description = serializers.CharField()
+    active = serializers.BooleanField(read_only=True)
+    chassisnumber = serializers.CharField(validators=[alphanumeric])
+    price = serializers.DecimalField(max_digits=10, decimal_places=2)
+
+    def create(self, validated_data):
+        return CarList.objects.create(**validated_data)
+    
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name', instance.name)
+        instance.description = validated_data.get('description', instance.description)
+        instance.active = validated_data.get('active', instance.active)
+        instance.chassisnumber = validated_data.get('chassisnumber', instance.chassisnumber)
+        instance.price = validated_data.get('price', instance.price)
+        instance.save()
+        return instance
+    
+    # Field level validations
+    def validate_price(self, value):
+        if value < 0:
+            raise serializers.ValidationError('Price should be positive.')
+        elif value <= 20000:
+            raise serializers.ValidationError('Price should be greater than 20000.')
+        return value
+    
+    # Object level validations
+    def validate(self, attrs):
+        if attrs['name'] == attrs['description']:
+            raise serializers.ValidationError('Name and description should not be same.')
+        return attrs
+
+
+-- In ModelSerializer, create and update is being taken care by itself. You can override, if necessary.
+
+class CarSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CarList
+        fields = '__all__'
+    
+    
+    # Field level validations
+    def validate_price(self, value):
+        if value < 0:
+            raise serializers.ValidationError('Price should be positive.')
+        elif value <= 20000:
+            raise serializers.ValidationError('Price should be greater than 20000.')
+        return value
+    
+    # Object level validations
+    def validate(self, attrs):
+        if attrs['name'] == attrs['description']:
+            raise serializers.ValidationError('Name and description should not be same.')
+        return attrs

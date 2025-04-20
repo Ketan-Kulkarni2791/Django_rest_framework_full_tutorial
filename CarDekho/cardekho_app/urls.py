@@ -5,4 +5,5 @@ from . import views
 urlpatterns = [
     path('list', views.car_list_view, name='car_list'),
     path('<int:pk>', views.car_detail_view, name='car_detail'),
+    # path('create', views.car_create_view, name='car_create'),
 ] 
