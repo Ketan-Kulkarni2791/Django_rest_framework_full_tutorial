@@ -1,0 +1,58 @@
+*** To create and run a django app
+
+> python -m venv env1
+
+> env1\Scripts\activate.bat
+
+> pip install django==4.2.2
+
+> python -m pip install --upgrade pip
+
+> python -m django version
+
+> pip freeze > requirements.txt
+
+> django-admin startproject CarDekho
+
+-- Then get inside the project directory to create new app and add it (CarDekho) to settings.py installed app :
+    > cd CarDekho
+    > python manage.py startapp cardekho_app
+
+-- Then do the migrations.
+    > python manage.py migrate
+
+-- Create model CarList.
+
+-- Then migrate.
+    > python manage.py makemigrations
+    > python manage.py migrate
+
+-- Then create super user.
+    > python manage.py createsuperuser
+
+-- Create urls.py file in cardekho_app.
+
+-- Then create the view - car_list_view.
+
+-- Register the CarList model in admin.py.
+
+-- Then go ot admin panel and insert some data.
+
+-- Hit the list url and check if the json response is getting back.
+
+-- Create another view to get one car's details. and url for the same.
+
+-- Then install djangorestframework and add it (rest_framework) installed apps.
+    > pip install djangorestframework
+
+-- Serializers convert complex data into python dictionary.
+
+-- Create a folder - api_file, and then create a file inside that folder - serializers.py.
+
+-- Comment out the previous two functions as we are going to use serializer now.
+
+-- Validations in serializer:
+
+    > There are 3 types of Validations : 
+        1. Field Level Validations:
+            
