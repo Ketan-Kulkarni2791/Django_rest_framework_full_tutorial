@@ -8,13 +8,47 @@ from rest_framework import status
 from rest_framework.views import APIView
 
 
-class ShowrowView(APIView):
+class ShowroomwView(APIView):
     def get(self, request):
         showrooms = ShowroomList.objects.all()
         serializer = ShowroomListSerializer(showrooms, many=True)
         return Response(serializer.data)
+    
+    def post(self, request):
+        serializer = ShowroomListSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class ShowroomDetailView(APIView):
+    def get(self, request, pk):
+        try:
+            showroom = ShowroomList.objects.get(pk=pk)
+            serializer = ShowroomListSerializer(showroom)
+            return Response(serializer.data)
+        except ShowroomList.DoesNotExist:
+            return Response({'error': 'Showroom not found'}, status=404)
+    
+    def put(self, request, pk):
+        try:
+            showroom = ShowroomList.objects.get(pk=pk)
+            serializer = ShowroomListSerializer(showroom, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except ShowroomList.DoesNotExist:
+            return Response({'error': 'Showroom not found'}, status=404)
+    
+    def delete(self, request, pk):
+        try:
+            showroom = ShowroomList.objects.get(pk=pk)
+            showroom.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except ShowroomList.DoesNotExist:
+            return Response({'error': 'Showroom not found'}, status=404)
 
 # def car_list_view(request):
 #     cars = CarList.objects.all()
