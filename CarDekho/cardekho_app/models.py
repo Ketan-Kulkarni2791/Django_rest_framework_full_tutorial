@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 def alphanumeric(value):
@@ -26,3 +27,16 @@ class CarList(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Review(models.Model):
+    rating = models.IntegerField(validators=[MinValueValidator, MaxValueValidator])
+    comments = models.CharField(max_length=200, null=True)
+    car = models.ForeignKey(CarList, on_delete=models.CASCADE, related_name='reviews', null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f'{self.car.name} - {self.rating}'
+
+    

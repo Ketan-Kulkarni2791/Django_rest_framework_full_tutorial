@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from .models import CarList, ShowroomList
 from django.http import JsonResponse
 from .api_file.serializers import CarSerializer, ShowroomListSerializer
@@ -11,7 +10,11 @@ from rest_framework.views import APIView
 class ShowroomwView(APIView):
     def get(self, request):
         showrooms = ShowroomList.objects.all()
-        serializer = ShowroomListSerializer(showrooms, many=True)
+        serializer = ShowroomListSerializer(
+            showrooms, 
+            many=True,
+            context={'request': request}
+        )
         return Response(serializer.data)
     
     def post(self, request):
@@ -23,7 +26,7 @@ class ShowroomwView(APIView):
 
 
 class ShowroomDetailView(APIView):
-    def get(self, request, pk):
+    def get(self, pk):
         try:
             showroom = ShowroomList.objects.get(pk=pk)
             serializer = ShowroomListSerializer(showroom)
@@ -42,7 +45,7 @@ class ShowroomDetailView(APIView):
         except ShowroomList.DoesNotExist:
             return Response({'error': 'Showroom not found'}, status=404)
     
-    def delete(self, request, pk):
+    def delete(self, pk):
         try:
             showroom = ShowroomList.objects.get(pk=pk)
             showroom.delete()
