@@ -1,0 +1,19 @@
+*********** BASIC AUTHENTICATION ***********
+
+-- This is a simple and straightforward method of authentication.
+-- It involves sending the user’s credentials (username and password) 
+   with each request to the server.
+-- The server then verifies these credentials before granting access to 
+   the requested resource.
+-- While Basic Authentication is easy to understand and implement, it 
+   raises security concerns due to the transmission of credentials in 
+   plain text.
+
+
+*************** SESSION AUTHENTICATION **************
+
+-- Session Authentication revolves around the concept of a user session, 
+   where a user logs in once, and the server maintains their 
+   authenticated state throughout their interaction with the application.
+-- Instead of sending credentials with each request, the server assigns 
+   a unique session identifier to the user after a successful login.

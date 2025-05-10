@@ -1,13 +1,65 @@
-from .models import CarList, ShowroomList
+from .models import (CarList, ShowroomList, Review)
 from django.http import JsonResponse
-from .api_file.serializers import CarSerializer, ShowroomListSerializer
+from .api_file.serializers import (
+    CarSerializer, 
+    ShowroomListSerializer,
+    ReviewSerializer
+)
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.views import APIView
+from rest_framework import generics
+from rest_framework import mixins
+from rest_framework.authentication import (
+    SessionAuthentication,
+    BasicAuthentication,    
+    TokenAuthentication
+)
+from rest_framework.permissions import (
+    IsAuthenticated,
+    IsAdminUser,
+    AllowAny
+)
+
+
+class ReviewDetailView(mixins.RetrieveModelMixin,
+                        mixins.UpdateModelMixin,
+                        mixins.DestroyModelMixin,
+                        generics.GenericAPIView):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+    
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+    
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
+
+class ReviewListView(mixins.ListModelMixin,
+                      mixins.CreateModelMixin,
+                      generics.GenericAPIView):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
 
 
 class ShowroomwView(APIView):
+
+    # authentication_classes = [BasicAuthentication]
+    # permission_classes = [IsAuthenticated]
+    # permission_classes = [AllowAny]
+    # permission_classes = [IsAdminUser]
+
     def get(self, request):
         showrooms = ShowroomList.objects.all()
         serializer = ShowroomListSerializer(
