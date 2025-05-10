@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from .models import (CarList, ShowroomList, Review)
 from django.http import JsonResponse
 from .api_file.serializers import (
@@ -11,6 +12,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework import mixins
+from rest_framework import viewsets
 from rest_framework.authentication import (
     SessionAuthentication,
     BasicAuthentication,    
@@ -70,6 +72,44 @@ class ReviewDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 #     def post(self, request, *args, **kwargs):
 #         return self.create(request, *args, **kwargs)
+
+
+class ShowroomViewSet(viewsets.ModelViewSet):
+    queryset = ShowroomList.objects.all()
+    serializer_class = ShowroomListSerializer
+
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [DjangoModelPermissions]
+
+
+# class ShowroomViewSet(viewsets.ViewSet):
+
+#     def list(self, request):
+#         queryset = ShowroomList.objects.all()
+#         serializer = ShowroomListSerializer(queryset, many=True)
+#         return Response(serializer.data)
+
+#     def retrieve(self, request, pk=None):
+#         queryset = ShowroomList.objects.all()
+#         showroom = get_object_or_404(queryset, pk=pk)
+#         serializer = ShowroomListSerializer(showroom)
+#         return Response(serializer.data)
+    
+#     def create(self, request):
+#         serializer = ShowroomListSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+#     def update(self, request, pk=None):
+#         queryset = ShowroomList.objects.all()
+#         showroom = get_object_or_404(queryset, pk=pk)
+#         serializer = ShowroomListSerializer(showroom, data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ShowroomwView(APIView):

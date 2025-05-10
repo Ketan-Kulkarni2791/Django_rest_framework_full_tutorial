@@ -39,7 +39,7 @@ class CarSerializer(serializers.ModelSerializer):
 
 class ShowroomListSerializer(serializers.ModelSerializer):
     # This will display all the information about cars associated with showroom.
-    # showrooms = CarSerializer(many=True, read_only=True)
+    showrooms = CarSerializer(many=True, read_only=True)
 
     # This will display the information given in __str__ method in models.py 
     # showrooms = serializers.StringRelatedField(many=True)
@@ -49,11 +49,11 @@ class ShowroomListSerializer(serializers.ModelSerializer):
 
     # This will display a hyperlink in order to show the dispaly of cars.
     # Also add "context={'request': request}" in showroom_view GET.
-    showrooms = serializers.HyperlinkedRelatedField(
-        many=True,
-        read_only=True,
-        view_name='car_detail'  # This name is from urls.py car_detail url name.
-    )
+    # showrooms = serializers.HyperlinkedRelatedField(
+    #     many=True,
+    #     read_only=True,
+    #     view_name='car_detail'  # This name is from urls.py car_detail url name.
+    # )
 
     class Meta:
         model = ShowroomList

@@ -77,3 +77,64 @@
                 view_name='car_detail'  # This name is from urls.py car_detail url name.
             )
 
+-- Viewsets and Routers are used to combine the path.
+-- For example
+
+        path('showroom', views.ShowroomwView.as_view(), name='showroomw_view'),
+        path('showroom/<int:pk>', views.ShowroomDetailView.as_view(), name='showroomw_detail_view'),
+
+-- We cannot afford to create such a 2 paths in a large project.
+-- So we can combine them into one path.
+-- For viewset implementation :
+
+# views.py
+from rest_framework import viewsets
+
+# app/urls.py
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+router.register('showroom', views.ShowroomViewSet, basename='showroom')
+
+# views.py
+# class ShowroomViewSet(viewsets.ViewSet):
+
+#     def list(self, request):
+#         queryset = ShowroomList.objects.all()
+#         serializer = ShowroomListSerializer(queryset, many=True)
+#         return Response(serializer.data)
+
+#     def retrieve(self, request, pk=None):
+#         queryset = ShowroomList.objects.all()
+#         showroom = get_object_or_404(queryset, pk=pk)
+#         serializer = ShowroomListSerializer(showroom)
+#         return Response(serializer.data)
+    
+#     def create(self, request):
+#         serializer = ShowroomListSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+#     def update(self, request, pk=None):
+#         queryset = ShowroomList.objects.all()
+#         showroom = get_object_or_404(queryset, pk=pk)
+#         serializer = ShowroomListSerializer(showroom, data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+-- OR using ModelViewSet :
+
+class ShowroomViewSet(viewsets.ModelViewSet):
+    queryset = ShowroomList.objects.all()
+    serializer_class = ShowroomListSerializer
+
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [DjangoModelPermissions]
+
+
