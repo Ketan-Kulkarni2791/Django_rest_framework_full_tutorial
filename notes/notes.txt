@@ -138,3 +138,7 @@ class ShowroomViewSet(viewsets.ModelViewSet):
     permission_classes = [DjangoModelPermissions]
 
 
+
+-- If you do not want to see all the list of reviews and only want to see
+   particular car's review, then changes have made under the commit 
+   - "updated url".

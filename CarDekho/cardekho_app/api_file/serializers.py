@@ -5,7 +5,8 @@ from ..models import CarList, ShowroomList, Review
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
-        fields = '__all__'
+        exclude = ('car',)
+        # fields = '__all__'
 
 # Serializer for CarList model
 class CarSerializer(serializers.ModelSerializer):

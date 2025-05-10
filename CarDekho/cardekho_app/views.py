@@ -26,12 +26,28 @@ from rest_framework.permissions import (
 )
 
 # Concrete Views Using generics
-class ReviewListView(generics.ListCreateAPIView):
+class ReviewCreateView(generics.CreateAPIView):
+    serializer_class = ReviewSerializer
+
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [DjangoModelPermissions]
+
+    def perform_create(self, serializer):
+        pk = self.kwargs['pk']
+        car = CarList.objects.get(pk=pk)
+        serializer.save(car=car)
+
+
+class ReviewListView(generics.ListAPIView):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
 
     authentication_classes = [SessionAuthentication]
     permission_classes = [DjangoModelPermissions]
+
+    def get_queryset(self):
+        pk = self.kwargs['pk']
+        return Review.objects.filter(car=pk)
 
 
 class ReviewDetailView(generics.RetrieveUpdateDestroyAPIView):
