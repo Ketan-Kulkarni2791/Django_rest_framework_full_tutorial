@@ -1,0 +1,31 @@
+************ USING COOKIES FOR SESSION MANAGEMENT ***********
+
+1> Session Creation:
+
+-- When a user logs into a web application, the server generates a 
+   unique session identifier (session ID) for that user’s session.
+-- The server stores relevant session data (user information, preferences,
+   etc.) associated with the session ID on the server-side memory or in 
+   a database.
+-- The server sends the session ID to the client’s browser as a cookie 
+   in the HTTP response header. The cookie is then stored on the client’s 
+   machine.
+
+2> Session Management:
+
+-- With each subsequent request, the client’s browser automatically 
+   includes the session ID cookie in the HTTP request header.
+-- The server extracts the session ID from the request header, uses it 
+   to retrieve the corresponding session data from its storage, and 
+   processes the request in the context of that user’s session.
+-- This allows the server to provide personalized content and maintain 
+   user state across different requests.
+
+3> Session Termination:
+
+-- Sessions can be terminated by the user explicitly logging out or by 
+   the server if the session becomes inactive for a specified period 
+   (session timeout).
+-- When a session is terminated, the server removes the associated session 
+   data from its storage, and the session ID stored in the client’s cookie 
+   becomes invalid.

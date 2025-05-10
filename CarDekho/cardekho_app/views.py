@@ -19,38 +19,57 @@ from rest_framework.authentication import (
 from rest_framework.permissions import (
     IsAuthenticated,
     IsAdminUser,
-    AllowAny
+    AllowAny,
+    DjangoModelPermissions
 )
 
-
-class ReviewDetailView(mixins.RetrieveModelMixin,
-                        mixins.UpdateModelMixin,
-                        mixins.DestroyModelMixin,
-                        generics.GenericAPIView):
+# Concrete Views Using generics
+class ReviewListView(generics.ListCreateAPIView):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
 
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
-    
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-    
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [DjangoModelPermissions]
 
 
-class ReviewListView(mixins.ListModelMixin,
-                      mixins.CreateModelMixin,
-                      generics.GenericAPIView):
+class ReviewDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
 
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [DjangoModelPermissions]
 
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
+# class ReviewDetailView(mixins.RetrieveModelMixin,
+#                         mixins.UpdateModelMixin,
+#                         mixins.DestroyModelMixin,
+#                         generics.GenericAPIView):
+#     queryset = Review.objects.all()
+#     serializer_class = ReviewSerializer
+
+#     def get(self, request, *args, **kwargs):
+#         return self.retrieve(request, *args, **kwargs)
+    
+#     def put(self, request, *args, **kwargs):
+#         return self.update(request, *args, **kwargs)
+    
+#     def delete(self, request, *args, **kwargs):
+#         return self.destroy(request, *args, **kwargs)
+
+
+# class ReviewListView(mixins.ListModelMixin,
+#                       mixins.CreateModelMixin,
+#                       generics.GenericAPIView):
+#     queryset = Review.objects.all()
+#     serializer_class = ReviewSerializer
+
+#     authentication_classes = [SessionAuthentication]
+#     permission_classes = [DjangoModelPermissions]
+
+#     def get(self, request, *args, **kwargs):
+#         return self.list(request, *args, **kwargs)
+
+#     def post(self, request, *args, **kwargs):
+#         return self.create(request, *args, **kwargs)
 
 
 class ShowroomwView(APIView):
@@ -59,6 +78,9 @@ class ShowroomwView(APIView):
     # permission_classes = [IsAuthenticated]
     # permission_classes = [AllowAny]
     # permission_classes = [IsAdminUser]
+
+    # authentication_classes = [SessionAuthentication]
+    # permission_classes = [IsAuthenticated]
 
     def get(self, request):
         showrooms = ShowroomList.objects.all()
