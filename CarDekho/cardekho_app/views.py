@@ -24,6 +24,7 @@ from rest_framework.permissions import (
     AllowAny,
     DjangoModelPermissions
 )
+from rest_framework.exceptions import ValidationError
 
 # Concrete Views Using generics
 class ReviewCreateView(generics.CreateAPIView):
@@ -32,10 +33,17 @@ class ReviewCreateView(generics.CreateAPIView):
     authentication_classes = [SessionAuthentication]
     permission_classes = [DjangoModelPermissions]
 
+    def get_queryset(self):
+        return Review.objects.all()
+
     def perform_create(self, serializer):
         pk = self.kwargs['pk']
         car = CarList.objects.get(pk=pk)
-        serializer.save(car=car)
+        logged_user = self.request.user
+        Review_queryset = Review.objects.filter(apiuser=logged_user, car=car)
+        if Review_queryset.exists():
+            raise ValidationError('You have already reviewed this car.')
+        serializer.save(car=car, apiuser=logged_user)
 
 
 class ReviewListView(generics.ListAPIView):

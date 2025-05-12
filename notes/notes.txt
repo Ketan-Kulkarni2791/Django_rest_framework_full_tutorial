@@ -142,3 +142,46 @@ class ShowroomViewSet(viewsets.ModelViewSet):
 -- If you do not want to see all the list of reviews and only want to see
    particular car's review, then changes have made under the commit 
    - "updated url".
+
+-- CREATING USER Model :
+
+> Requirement : We want to see the user who has shared their riviews.
+
+# models.py
+from django.contrib.auth.models import User
+
+class Review(models.Model):
+    apiuser = models.ForeignKey(User, on_delete=models.CASCADE, related_name='apiuser', null=True, blank=True)
+
+# serializers.py
+class ReviewSerializer(serializers.ModelSerializer):
+    apiuser = serializers.StringRelatedField(many=False, read_only=True)
+
+> Requirement : 
+
+1. Only particular user can edit its own comment and not anyone else.
+2. One user can share only one review per car.
+
+
+###### For Requirement 2 :
+# views.py
+from rest_framework.exceptions import ValidationError
+
+class ReviewCreateView(generics.CreateAPIView):
+    def get_queryset(self):
+        return Review.objects.all()
+
+    def perform_create(self, serializer):
+        pk = self.kwargs['pk']
+        car = CarList.objects.get(pk=pk)
+        > logged_user = self.request.user
+        > Review_queryset = Review.objects.filter(apiuser=logged_user, car=car)
+        > if Review_queryset.exists():
+            > raise ValidationError('You have already reviewed this car.')
+        serializer.save(car=car, apiuser=logged_user)
+
+###### For Requirement 1
+- Create a permissions.py file in cardekho_app/api_file folder.
+# permissions.py
+from rest_framework import permissions
+

@@ -3,6 +3,7 @@ from ..models import CarList, ShowroomList, Review
 
 
 class ReviewSerializer(serializers.ModelSerializer):
+    apiuser = serializers.StringRelatedField(many=False, read_only=True)
     class Meta:
         model = Review
         exclude = ('car',)
