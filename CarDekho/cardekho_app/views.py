@@ -6,6 +6,10 @@ from .api_file.serializers import (
     ShowroomListSerializer,
     ReviewSerializer
 )
+from .api_file.permissions import (
+    IsAdminOrReadOnly,
+    ReviewUserPermissionOrReadOnly
+)
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
@@ -63,7 +67,7 @@ class ReviewDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ReviewSerializer
 
     authentication_classes = [SessionAuthentication]
-    permission_classes = [DjangoModelPermissions]
+    permission_classes = [IsAdminOrReadOnly]
 
 # class ReviewDetailView(mixins.RetrieveModelMixin,
 #                         mixins.UpdateModelMixin,
